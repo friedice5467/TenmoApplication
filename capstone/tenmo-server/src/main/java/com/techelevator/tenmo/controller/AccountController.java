@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
@@ -27,5 +28,10 @@ public class AccountController {
         String userName = principal.getName();
 
         return userDao.getBalance(userName);
+    }
+
+    @GetMapping("users")
+    public List<String> getUserList(Principal principal) {
+        return userDao.listAll(principal);
     }
 }

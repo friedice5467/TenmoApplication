@@ -9,6 +9,7 @@ import com.techelevator.tenmo.services.ConsoleService;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
 
 public class App {
 
@@ -81,6 +82,10 @@ public class App {
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
+                List<String> userList = accountService.getUserList();
+                for (String user : userList) {
+                    System.out.println(user);
+                }
                 sendBucks();
             } else if (menuSelection == 5) {
                 requestBucks();
@@ -94,9 +99,6 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
-
-        System.out.println("The username of this account is: " + currentUser.getUser().getUsername());
         BigDecimal balance = accountService.getBalance();
 
         System.out.println("The balance of this account is: $" + balance);
@@ -113,8 +115,8 @@ public class App {
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
-		
+
+
 	}
 
 	private void requestBucks() {
