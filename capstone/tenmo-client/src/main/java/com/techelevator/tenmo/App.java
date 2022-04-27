@@ -1,9 +1,14 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+
+import java.math.BigDecimal;
+import java.security.Principal;
 
 public class App {
 
@@ -11,6 +16,7 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
+    private final AccountService accountService = new AccountService();
 
     private AuthenticatedUser currentUser;
 
@@ -58,6 +64,9 @@ public class App {
         if (currentUser == null) {
             consoleService.printErrorMessage();
         }
+        else{
+            accountService.setAuthToken(currentUser.getToken());
+        }
     }
 
     private void mainMenu() {
@@ -86,7 +95,11 @@ public class App {
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-		
+
+        System.out.println("The username of this account is: " + currentUser.getUser().getUsername());
+        BigDecimal balance = accountService.getBalance();
+
+        System.out.println("The balance of this account is: $" + balance);
 	}
 
 	private void viewTransferHistory() {
