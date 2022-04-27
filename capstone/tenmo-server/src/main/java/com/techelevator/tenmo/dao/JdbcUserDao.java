@@ -33,7 +33,20 @@ public class JdbcUserDao implements UserDao {
             return -1;
         }
     }
-
+    @Override
+    public int findAccountIdByUsername(String username) throws UsernameNotFoundException{
+        String sql = "SELECT account_id\n" +
+                "FROM account AS a\n" +
+                "INNER JOIN tenmo_user AS tu\n" +
+                "\tON a.user_id = tu.user_id\n" +
+                "WHERE username = ?;";
+        int account_id = 0;
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, username);
+        if(rowSet.next()){
+            account_id = rowSet.getInt("account_id");
+        }
+        return account_id;
+    }
 
     @Override
     public List<User> findAll() {
@@ -56,6 +69,8 @@ public class JdbcUserDao implements UserDao {
         }
         throw new UsernameNotFoundException("User " + username + " was not found.");
     }
+
+
 
     @Override
     public boolean create(String username, String password) {
