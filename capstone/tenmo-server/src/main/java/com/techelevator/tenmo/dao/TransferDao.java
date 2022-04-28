@@ -10,9 +10,9 @@ public interface TransferDao {
 
     public List<Transfer> findAll();
 
-    public void createTransfer(int transferType, int accountFrom, int accountTo, BigDecimal amount);
+    public void createSendTransfer(Transfer transfer);
 
-    public void updateTransfer();
+    public void updateTransfer(int transferstatus);
 
 
 }

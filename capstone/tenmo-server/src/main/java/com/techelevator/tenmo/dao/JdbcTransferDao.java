@@ -23,10 +23,10 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public void createTransfer(int transferType, int accountFrom, int accountTo, BigDecimal amount) {
+    public void createSendTransfer(Transfer transfer) {
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)\n" +
-                "VALUES (?, 1, ?, ?, ?);";
-        jdbcTemplate.update(sql, transferType,  accountFrom, accountTo, amount);
+                "VALUES (2, 1, ?, ?, ?);";
+        jdbcTemplate.update(sql, transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
     }
 
     @Override
