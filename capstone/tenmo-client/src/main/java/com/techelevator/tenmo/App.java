@@ -99,7 +99,8 @@ public class App {
                 transfer.setReceiverUsername(receiverUsername);
                 TransferAmountPage transferAmountPage = new TransferAmountPage();
                 transfer.setAmount(transferAmountPage.display(scanner));
-                System.out.println(transfer.getAmount());
+                transfer.setSenderUsername(currentUser.getUser().getUsername());
+
                 sendBucks();
             } else if (menuSelection == 5) {
                 requestBucks();
@@ -129,8 +130,7 @@ public class App {
 	}
 
 	private void sendBucks() {
-    transferService.createSendTransfer(transfer);
-
+        transferService.createSendTransfer(transfer);
 	}
 
 	private void requestBucks() {

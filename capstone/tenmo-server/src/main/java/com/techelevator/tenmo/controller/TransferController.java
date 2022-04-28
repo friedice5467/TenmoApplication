@@ -36,18 +36,18 @@ public class TransferController {
 
 
         //String receiverUsername, String senderUsername, int transferId, int transferType, int transferStatus, int accountFrom, int accountTo, BigDecimal amount
-        Transfer newTransfer = new Transfer(transfer.getReceiverUsername(), senderUsername, transfer.getTransferId(), transfer.getTransferType()
-                                                , transfer.getTransferStatus(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+        Transfer newTransfer = new Transfer(transfer.getReceiverUsername(), senderUsername, 2
+                                                , 1, accountFromId, accountToId, transfer.getAmount());
 
-        transfer.setAccountFrom(accountFromId);
-        transfer.setAccountTo(accountToId);
-        transferDao.createSendTransfer(transfer);
+        transferDao.createSendTransfer(newTransfer);
 
         if(transfer.getAmount().compareTo(BigDecimal.ZERO) > 0 && userDao.getBalance(transfer.getSenderUsername()).compareTo(transfer.getAmount()) >= 0 ){
-            // update transfer status
-            // update sender balance
-            // update receiver balance
-            transferDao.updateTransfer(userIdSender, userIdReceiver, transfer);
+            newTransfer.setTransferStatus(2);
+            transferDao.updateTransfer(userIdSender, userIdReceiver, newTransfer);
+        }
+        else {
+            newTransfer.setTransferStatus(3);
+            transferDao.updateRejectedTransfer(newTransfer);
         }
     }
 

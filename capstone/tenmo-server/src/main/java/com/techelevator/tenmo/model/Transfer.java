@@ -14,10 +14,9 @@ public class Transfer {
 
     public Transfer(){}
 
-    public Transfer(String receiverUsername, String senderUsername, int transferId, int transferType, int transferStatus, int accountFrom, int accountTo, BigDecimal amount) {
+    public Transfer(String receiverUsername, String senderUsername, int transferType, int transferStatus, int accountFrom, int accountTo, BigDecimal amount) {
         this.receiverUsername = receiverUsername;
         this.senderUsername = senderUsername;
-        this.transferId = transferId;
         this.transferType = transferType;
         this.transferStatus = transferStatus;
         this.accountFrom = accountFrom;
@@ -64,10 +63,6 @@ public class Transfer {
 
     public void setSenderUsername(String senderUsername) {
         this.senderUsername = senderUsername;
-    }
-
-    public void setTransferId(int transferId) {
-        this.transferId = transferId;
     }
 
     public void setTransferType(int transferType) {

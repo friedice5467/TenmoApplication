@@ -17,7 +17,7 @@ public class RegisteredUsersPage {
         }
         System.out.print("Choose a user from the list that you want to send money to:  ");
 
-        return scanner.nextLine();
+        return scanner.nextLine().trim();
     }
     //what is their username?: enter here
 }

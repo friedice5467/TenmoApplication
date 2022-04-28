@@ -14,5 +14,7 @@ public interface TransferDao {
 
     public void updateTransfer(int userIdSender, int userIdReceiver, Transfer transfer);
 
+    public void updateRejectedTransfer(Transfer transfer);
+
 
 }

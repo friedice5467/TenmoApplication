@@ -52,4 +52,14 @@ public class JdbcTransferDao implements TransferDao{
                                 transfer.getAmount(), userIdReceiver);
     }
 
+    @Override
+    public void updateRejectedTransfer(Transfer transfer) {
+        String sql = "UPDATE transfer\n" +
+                "SET transfer_status_id = ?\n" +
+                "WHERE transfer_id = ?\n" +
+                ";";
+
+        jdbcTemplate.update(sql, transfer.getTransferStatus(), transfer.getTransferId());
+    }
+
 }
