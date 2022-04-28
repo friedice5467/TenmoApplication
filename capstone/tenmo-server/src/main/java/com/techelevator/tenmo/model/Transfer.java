@@ -25,6 +25,7 @@ public class Transfer {
         this.amount = amount;
     }
 
+
     public String getReceiverUsername() {
         return receiverUsername;
     }

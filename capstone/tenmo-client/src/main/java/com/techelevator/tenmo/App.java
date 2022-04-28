@@ -1,15 +1,20 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import com.techelevator.tenmo.services.TransferService;
+import com.techelevator.tenmo.views.RegisteredUsersPage;
+import com.techelevator.tenmo.views.TransferAmountPage;
 
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
+import java.util.Scanner;
 
 public class App {
 
@@ -18,6 +23,10 @@ public class App {
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private final AccountService accountService = new AccountService();
+    private final TransferService transferService = new TransferService();
+    private final Transfer transfer = new Transfer();
+
+    private Scanner scanner = new Scanner(System.in);
 
     private AuthenticatedUser currentUser;
 
@@ -82,10 +91,15 @@ public class App {
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
-                List<String> userList = accountService.getUserList();
-                for (String user : userList) {
-                    System.out.println(user);
-                }
+                //display userbase
+                // String receiverUsername, String senderUsername, int transferId, int transferType,
+                // int transferStatus, int accountFrom, int accountTo, BigDecimal amount
+                RegisteredUsersPage registeredUsersPage = new RegisteredUsersPage();
+                String receiverUsername = registeredUsersPage.display(scanner, accountService);
+                transfer.setReceiverUsername(receiverUsername);
+                TransferAmountPage transferAmountPage = new TransferAmountPage();
+                transfer.setAmount(transferAmountPage.display(scanner));
+                System.out.println(transfer.getAmount());
                 sendBucks();
             } else if (menuSelection == 5) {
                 requestBucks();
@@ -115,7 +129,7 @@ public class App {
 	}
 
 	private void sendBucks() {
-
+    transferService.createSendTransfer(transfer);
 
 	}
 

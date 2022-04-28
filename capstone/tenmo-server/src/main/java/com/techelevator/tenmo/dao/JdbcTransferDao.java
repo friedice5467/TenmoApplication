@@ -48,7 +48,8 @@ public class JdbcTransferDao implements TransferDao{
         // account to = target user
         // currentUserBalance = balance - amount
         // targetUserBalance = balance + amount
-        jdbcTemplate.update(sql, transfer.getTransferStatus(), transfer.getTransferId(), transfer.getAmount(), userIdSender, transfer.getAmount(), userIdReceiver);
+        jdbcTemplate.update(sql, transfer.getTransferStatus(), transfer.getTransferId(), transfer.getAmount(), userIdSender,
+                                transfer.getAmount(), userIdReceiver);
     }
 
 }

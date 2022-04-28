@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.controller;
 
+import com.techelevator.tenmo.dao.JdbcTransferDao;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Transfer;
@@ -23,11 +24,20 @@ public class TransferController {
     }
 
     @PostMapping("/send")
-    public void createSendTransfer(@RequestBody Transfer transfer) {
+    public void createSendTransfer(Principal principal, @RequestBody Transfer transfer) {
         int accountFromId = userDao.findAccountIdByUsername(transfer.getSenderUsername());
         int accountToId = userDao.findAccountIdByUsername(transfer.getReceiverUsername());
         int userIdSender = userDao.findIdByUsername(transfer.getSenderUsername());
         int userIdReceiver = userDao.findIdByUsername(transfer.getReceiverUsername());
+        String senderUsername = "";
+        if(principal.getName().equalsIgnoreCase(transfer.getReceiverUsername())){
+            senderUsername = transfer.getReceiverUsername();
+        }
+
+
+        //String receiverUsername, String senderUsername, int transferId, int transferType, int transferStatus, int accountFrom, int accountTo, BigDecimal amount
+        Transfer newTransfer = new Transfer(transfer.getReceiverUsername(), senderUsername, transfer.getTransferId(), transfer.getTransferType()
+                                                , transfer.getTransferStatus(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
 
         transfer.setAccountFrom(accountFromId);
         transfer.setAccountTo(accountToId);
