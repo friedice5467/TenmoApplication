@@ -31,10 +31,24 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public void updateTransfer(int transferStatus) {
+    public void updateTransfer(int userIdSender, int userIdReceiver, Transfer transfer) {
         String sql = "UPDATE transfer\n" +
-                "SET transfer_status_id = ?";
+                "SET transfer_status_id = ?\n" +
+                "WHERE transfer_id = ?;" +
+                "" +
+                "UPDATE account\n" +
+                "SET balance = balance - ?\n" +
+                "WHERE user_id = ?;\n" +
+                "\n" +
+                "UPDATE account\n" +
+                "SET balance = balance + ?\n" +
+                "WHERE user_id = ?;";
 
+        // account from = current user
+        // account to = target user
+        // currentUserBalance = balance - amount
+        // targetUserBalance = balance + amount
+        jdbcTemplate.update(sql, transfer.getTransferStatus(), transfer.getTransferId(), transfer.getAmount(), userIdSender, transfer.getAmount(), userIdReceiver);
     }
 
 }

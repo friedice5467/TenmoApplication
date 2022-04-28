@@ -12,7 +12,7 @@ public interface TransferDao {
 
     public void createSendTransfer(Transfer transfer);
 
-    public void updateTransfer(int transferstatus);
+    public void updateTransfer(int userIdSender, int userIdReceiver, Transfer transfer);
 
 
 }
