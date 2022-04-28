@@ -76,6 +76,7 @@ public class App {
         }
         else{
             accountService.setAuthToken(currentUser.getToken());
+            transferService.setAuthToken(currentUser.getToken());
         }
     }
 

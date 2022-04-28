@@ -24,10 +24,14 @@ public class JdbcTransferDao implements TransferDao{
 
     @Override
     public void createSendTransfer(Transfer transfer) {
-
+        int pending = 1;
+        int approved = 2;
+        int rejected = 3;
+        int send = 2;
+        int request = 1;
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)\n" +
-                "VALUES (2, 1, ?, ?, ?);";
-        jdbcTemplate.update(sql, transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+                "VALUES (?, ?, ?, ?, ?);";
+        jdbcTemplate.update(sql,send, pending, transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
     }
 
     @Override

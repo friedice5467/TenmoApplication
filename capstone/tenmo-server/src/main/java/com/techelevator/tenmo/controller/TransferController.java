@@ -17,10 +17,16 @@ import java.security.Principal;
 public class TransferController {
     TransferDao transferDao;
     UserDao userDao;
+    private final int pending = 1;
+    private final int approved = 2;
+    private final int rejected = 3;
+    private final int send = 2;
+    private final int request = 1;
 
     @Autowired
-    public TransferController(TransferDao transferDao){
+    public TransferController(TransferDao transferDao, UserDao userDao){
         this.transferDao = transferDao;
+        this.userDao = userDao;
     }
 
     @PostMapping("/send")
@@ -30,24 +36,24 @@ public class TransferController {
         int userIdSender = userDao.findIdByUsername(transfer.getSenderUsername());
         int userIdReceiver = userDao.findIdByUsername(transfer.getReceiverUsername());
         String senderUsername = "";
-        if(principal.getName().equalsIgnoreCase(transfer.getReceiverUsername())){
-            senderUsername = transfer.getReceiverUsername();
+        if(principal.getName().equalsIgnoreCase(transfer.getSenderUsername())){
+            senderUsername = transfer.getSenderUsername();
         }
+        transfer.setTransferType(send);
+        transfer.setTransferStatus(pending);
+        transfer.setAccountFrom(accountFromId);
+        transfer.setAccountTo(accountToId);
+        transfer.setSenderUsername(senderUsername);
 
-
-        //String receiverUsername, String senderUsername, int transferId, int transferType, int transferStatus, int accountFrom, int accountTo, BigDecimal amount
-        Transfer newTransfer = new Transfer(transfer.getReceiverUsername(), senderUsername, 2
-                                                , 1, accountFromId, accountToId, transfer.getAmount());
-
-        transferDao.createSendTransfer(newTransfer);
+        transferDao.createSendTransfer(transfer);
 
         if(transfer.getAmount().compareTo(BigDecimal.ZERO) > 0 && userDao.getBalance(transfer.getSenderUsername()).compareTo(transfer.getAmount()) >= 0 ){
-            newTransfer.setTransferStatus(2);
-            transferDao.updateTransfer(userIdSender, userIdReceiver, newTransfer);
+            transfer.setTransferStatus(approved);
+            transferDao.updateTransfer(userIdSender, userIdReceiver, transfer);
         }
         else {
-            newTransfer.setTransferStatus(3);
-            transferDao.updateRejectedTransfer(newTransfer);
+            transfer.setTransferStatus(rejected);
+            transferDao.updateRejectedTransfer(transfer);
         }
     }
 

@@ -25,7 +25,6 @@ public class TransferService {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(authToken);
             HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
-            System.out.println("this has been reached");
 
             restTemplate.postForObject(url, entity, Void.class);
             System.out.println("posted");
