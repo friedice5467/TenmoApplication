@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.TransferDao;
+import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +14,7 @@ import java.security.Principal;
 @PreAuthorize("isAuthenticated()")
 public class TransferController {
     TransferDao transferDao;
+    UserDao userDao;
 
     @Autowired
     public TransferController(TransferDao transferDao){
@@ -21,8 +23,11 @@ public class TransferController {
 
     @PostMapping("/send")
     public void createSendTransfer(@RequestBody Transfer transfer) {
+        int accountFromId = userDao.findAccountIdByUsername(transfer.)
         transferDao.createSendTransfer(transfer);
     }
+
+
 
 
 }
