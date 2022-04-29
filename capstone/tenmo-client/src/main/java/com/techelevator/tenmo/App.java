@@ -2,7 +2,6 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
@@ -13,7 +12,6 @@ import com.techelevator.tenmo.views.TransferAmountPage;
 import com.techelevator.tenmo.views.ViewTransferPage;
 
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.util.List;
 import java.util.Scanner;
 
@@ -43,6 +41,7 @@ public class App {
             mainMenu();
         }
     }
+
     private void loginMenu() {
         int menuSelection = -1;
         while (menuSelection != 0 && currentUser == null) {
@@ -74,8 +73,7 @@ public class App {
         currentUser = authenticationService.login(credentials);
         if (currentUser == null) {
             consoleService.printErrorMessage();
-        }
-        else{
+        } else {
             accountService.setAuthToken(currentUser.getToken());
             transferService.setAuthToken(currentUser.getToken());
         }
@@ -89,53 +87,14 @@ public class App {
             if (menuSelection == 1) {
                 viewCurrentBalance();
             } else if (menuSelection == 2) {
-                List<Transfer> tempList = viewTransferHistory();
-                ViewTransferPage viewTransferPage = new ViewTransferPage();
-                int transactionId = viewTransferPage.display(scanner);
-
-                for(Transfer transfer: tempList){
-                    if(transfer.getTransferId() == transactionId){
-                        String status = "";
-                        String type = "";
-                        switch (transfer.getTransferStatus()){
-                            case 1:
-                                status = "Pending";
-                                break;
-                            case 2:
-                                status = "Approved";
-                                break;
-                            case 3:
-                                status = "Rejected";
-                                break;
-                        }
-                        switch (transfer.getTransferType()) {
-                            case 1:
-                                type = "Request";
-                                break;
-                            case 2:
-                                type = "Send";
-                                break;
-                        }
-
-                        System.out.println("Transfer ID: " + transfer.getTransferId() + "\nFrom: " + transfer.getSenderUsername() + "\nTo: " + transfer.getReceiverUsername() + "\nStatus: " + status + "\nType: " + type + "\nAmount: " + transfer.getAmount());
-                    }
-                }
-
+                displayAllTransfer();
             } else if (menuSelection == 3) {
-                viewPendingRequests();
+                displayRequestTransfer();
             } else if (menuSelection == 4) {
-                //display userbase
-                // String receiverUsername, String senderUsername, int transferId, int transferType,
-                // int transferStatus, int accountFrom, int accountTo, BigDecimal amount
-                RegisteredUsersPage registeredUsersPage = new RegisteredUsersPage();
-                String receiverUsername = registeredUsersPage.display(scanner, accountService);
-                transfer.setReceiverUsername(receiverUsername);
-                TransferAmountPage transferAmountPage = new TransferAmountPage();
-                transfer.setAmount(transferAmountPage.display(scanner));
-                transfer.setSenderUsername(currentUser.getUser().getUsername());
-
+                displayUserList();
                 sendBucks();
             } else if (menuSelection == 5) {
+                displayUserList();
                 requestBucks();
             } else if (menuSelection == 0) {
                 continue;
@@ -146,30 +105,111 @@ public class App {
         }
     }
 
-	private void viewCurrentBalance() {
+    private void viewCurrentBalance() {
         BigDecimal balance = accountService.getBalance();
 
         System.out.println("The balance of this account is: $" + balance);
-	}
+    }
 
-	private List<Transfer> viewTransferHistory() {
+    private List<Transfer> viewTransferHistory() {
         return transferService.getPastTransfer();
 
-		
-	}
 
-	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	private void sendBucks() {
+    private void displayAllTransfer() {
+        List<Transfer> tempList = viewTransferHistory();
+        ViewTransferPage viewTransferPage = new ViewTransferPage();
+        int transactionId = viewTransferPage.display(scanner);
+
+        for (Transfer transfer : tempList) {
+            if (transfer.getTransferId() == transactionId) {
+                String status = "";
+                String type = "";
+                switch (transfer.getTransferStatus()) {
+                    case 1:
+                        status = "Pending";
+                        break;
+                    case 2:
+                        status = "Approved";
+                        break;
+                    case 3:
+                        status = "Rejected";
+                        break;
+                }
+                switch (transfer.getTransferType()) {
+                    case 1:
+                        type = "Request";
+                        break;
+                    case 2:
+                        type = "Send";
+                        break;
+                }
+
+                System.out.println("Transfer ID: " + transfer.getTransferId() + "\nFrom: " + transfer.getSenderUsername() + "\nTo: " + transfer.getReceiverUsername() + "\nStatus: " + status + "\nType: " + type + "\nAmount: " + transfer.getAmount());
+            }
+        }
+    }
+
+    private void displayRequestTransfer() {
+        List<Transfer> tempList = viewPendingRequests();
+        ViewTransferPage viewTransferPage = new ViewTransferPage();
+        int transactionId = viewTransferPage.display(scanner);
+
+        for (Transfer transfer : tempList) {
+            if (transfer.getTransferId() == transactionId) {
+                String status = "";
+                String type = "";
+                switch (transfer.getTransferStatus()) {
+                    case 1:
+                        status = "Pending";
+                        break;
+                    case 2:
+                        status = "Approved";
+                        break;
+                    case 3:
+                        status = "Rejected";
+                        break;
+                }
+                switch (transfer.getTransferType()) {
+                    case 1:
+                        type = "Request";
+                        break;
+                    case 2:
+                        type = "Send";
+                        break;
+                }
+
+                System.out.println("Transfer ID: " + transfer.getTransferId() + "\nFrom: " + transfer.getSenderUsername() + "\nTo: " + transfer.getReceiverUsername() + "\nStatus: " + status + "\nType: " + type + "\nAmount: " + transfer.getAmount());
+            }
+        }
+    }
+
+    private List<Transfer> viewPendingRequests() {
+        // TODO Auto-generated method stub
+        return transferService.getPendingTransfer();
+
+
+    }
+
+    private void displayUserList() {
+        RegisteredUsersPage registeredUsersPage = new RegisteredUsersPage();
+        String receiverUsername = registeredUsersPage.display(scanner, accountService);
+        transfer.setReceiverUsername(receiverUsername);
+        TransferAmountPage transferAmountPage = new TransferAmountPage();
+        transfer.setAmount(transferAmountPage.display(scanner));
+        transfer.setSenderUsername(currentUser.getUser().getUsername());
+    }
+
+    private void sendBucks() {
         transferService.createSendTransfer(transfer);
-	}
+    }
 
-	private void requestBucks() {
-		// TODO Auto-generated method stub
-		
-	}
+    private void requestBucks() {
+        // TODO Auto-generated method stub
+
+        transferService.createRequestTransfer(transfer);
+
+    }
 
 }

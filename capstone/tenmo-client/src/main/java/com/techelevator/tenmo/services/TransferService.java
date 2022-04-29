@@ -37,11 +37,49 @@ public class TransferService {
 
     }
 
+    public boolean createRequestTransfer(Transfer transfer) {
+        try {
+            String url = BASE_URL + "transfer/request";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(authToken);
+            HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
+
+            restTemplate.postForObject(url, entity, Void.class);
+            return true;
+        } catch (RestClientException e) {
+            System.out.println("this failed");
+            return false;
+        }
+
+    }
+
     public List<Transfer> getPastTransfer(){
         List<Transfer> transferList =new ArrayList<>();
 
         try{
             String url = BASE_URL + "transfer";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(authToken);
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Transfer[]>response =restTemplate.exchange(url, HttpMethod.GET, entity, Transfer[].class);
+            transferList = Arrays.asList(response.getBody());
+        } catch (RestClientException e) {
+
+        }
+        for(Transfer transfer : transferList){
+            System.out.println(transfer.toString());
+        }
+        return transferList;
+    }
+
+    public List<Transfer> getPendingTransfer(){
+        List<Transfer> transferList =new ArrayList<>();
+
+        try{
+            String url = BASE_URL + "transfer/pending";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(authToken);

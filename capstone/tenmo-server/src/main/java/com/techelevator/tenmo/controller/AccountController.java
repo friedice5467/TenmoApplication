@@ -19,12 +19,12 @@ public class AccountController {
     UserDao userDao;
 
     @Autowired
-    public AccountController(UserDao userDao){
+    public AccountController(UserDao userDao) {
         this.userDao = userDao;
     }
 
     @GetMapping()
-    public BigDecimal getBalance(Principal principal){
+    public BigDecimal getBalance(Principal principal) {
         String userName = principal.getName();
 
         return userDao.getBalance(userName);

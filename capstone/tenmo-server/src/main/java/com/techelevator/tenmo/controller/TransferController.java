@@ -42,6 +42,15 @@ public class TransferController {
         return transferList;
     }
 
+    @GetMapping("/pending")
+    public List<Transfer> getRequestedTransferList(Principal principal) {
+        int accountFromId = userDao.findAccountIdByUsername(principal.getName());
+
+        List<Transfer> transferList = transferDao.getRequestTransferList(principal, accountFromId);
+
+        return transferList;
+    }
+
     @PostMapping("/send")
     public void createSendTransfer(Principal principal, @RequestBody Transfer transfer) {
         int accountFromId = userDao.findAccountIdByUsername(transfer.getSenderUsername());
@@ -68,11 +77,26 @@ public class TransferController {
         }
     }
 
+    @PostMapping("/request")
+    public void createRequestTransfer(Principal principal, @RequestBody Transfer transfer) {
+        int accountFromId = userDao.findAccountIdByUsername(transfer.getSenderUsername());
+        int accountToId = userDao.findAccountIdByUsername(transfer.getReceiverUsername());
+        int userIdSender = userDao.findIdByUsername(transfer.getSenderUsername());
+        int userIdReceiver = userDao.findIdByUsername(transfer.getReceiverUsername());
+        String senderUsername = "";
+        if (principal.getName().equalsIgnoreCase(transfer.getSenderUsername())) {
+            senderUsername = transfer.getSenderUsername();
+        }
+        transfer.setTransferType(send);
+        transfer.setTransferStatus(pending);
+        transfer.setAccountFrom(accountFromId);
+        transfer.setAccountTo(accountToId);
+        transfer.setSenderUsername(senderUsername);
 
-//    @GetMapping("/{id}")
-//    public Transfer getTransferFromTransactionId(Principal principal, @PathVariable int transactionId) {
-//        return transferDao.findTransferByTransferId(principal, transactionId);
-//    }
+        transferDao.createRequestTransfer(transfer);
 
+
+
+    }
 
 }

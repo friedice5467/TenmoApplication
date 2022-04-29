@@ -33,8 +33,9 @@ public class JdbcUserDao implements UserDao {
             return -1;
         }
     }
+
     @Override
-    public int findAccountIdByUsername(String username) throws UsernameNotFoundException{
+    public int findAccountIdByUsername(String username) throws UsernameNotFoundException {
         String sql = "SELECT account_id\n" +
                 "FROM account AS a\n" +
                 "INNER JOIN tenmo_user AS tu\n" +
@@ -42,7 +43,7 @@ public class JdbcUserDao implements UserDao {
                 "WHERE username = ?;";
         int account_id = 0;
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, username);
-        if(rowSet.next()){
+        if (rowSet.next()) {
             account_id = rowSet.getInt("account_id");
         }
         return account_id;
@@ -53,7 +54,7 @@ public class JdbcUserDao implements UserDao {
         List<User> users = new ArrayList<>();
         String sql = "SELECT user_id, username, password_hash FROM tenmo_user;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
-        while(results.next()) {
+        while (results.next()) {
             User user = mapRowToUser(results);
             users.add(user);
         }
@@ -64,12 +65,11 @@ public class JdbcUserDao implements UserDao {
     public User findByUsername(String username) throws UsernameNotFoundException {
         String sql = "SELECT user_id, username, password_hash FROM tenmo_user WHERE username ILIKE ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, username);
-        if (rowSet.next()){
+        if (rowSet.next()) {
             return mapRowToUser(rowSet);
         }
         throw new UsernameNotFoundException("User " + username + " was not found.");
     }
-
 
 
     @Override
@@ -96,15 +96,15 @@ public class JdbcUserDao implements UserDao {
         return true;
     }
 
-    public BigDecimal getBalance(String username){
-       String sql = "SELECT balance \n" +
-               "FROM account AS a \n" +
-               "INNER JOIN tenmo_user AS tu \n" +
-               "\tON a.user_id = tu.user_id\n" +
-               "WHERE tu.username = ?";
+    public BigDecimal getBalance(String username) {
+        String sql = "SELECT balance \n" +
+                "FROM account AS a \n" +
+                "INNER JOIN tenmo_user AS tu \n" +
+                "\tON a.user_id = tu.user_id\n" +
+                "WHERE tu.username = ?";
 
 
-      return jdbcTemplate.queryForObject(sql, BigDecimal.class, username);
+        return jdbcTemplate.queryForObject(sql, BigDecimal.class, username);
 
     }
 
@@ -118,7 +118,7 @@ public class JdbcUserDao implements UserDao {
         return user;
     }
 
-    public List<String> listAll(Principal principal){
+    public List<String> listAll(Principal principal) {
 
         List<String> users = new ArrayList<>();
 
@@ -130,7 +130,7 @@ public class JdbcUserDao implements UserDao {
         while (result.next()) {
             String user = result.getString("username");
 
-            if(user != null && !user.equals(principal.getName()))
+            if (user != null && !user.equals(principal.getName()))
                 users.add(user);
         }
         return users;

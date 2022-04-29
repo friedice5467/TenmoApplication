@@ -12,7 +12,8 @@ public class Transfer {
     private int accountTo;
     private BigDecimal amount;
 
-    public Transfer(){}
+    public Transfer() {
+    }
 
     public Transfer(String receiverUsername, String senderUsername, int transferType, int transferStatus, int accountFrom, int accountTo, BigDecimal amount) {
         this.receiverUsername = receiverUsername;
@@ -86,7 +87,7 @@ public class Transfer {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Transfer ID: " + getTransferId() + "\tFrom: " + getSenderUsername() + "\tTo: " + getReceiverUsername() + "\tAmount: " + getAmount();
     }
 }

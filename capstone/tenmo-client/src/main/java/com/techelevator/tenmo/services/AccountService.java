@@ -18,13 +18,13 @@ public class AccountService {
 
     private String authToken = null;
 
-    public void setAuthToken(String authToken){
+    public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
 
-    public BigDecimal getBalance(){
+    public BigDecimal getBalance() {
         BigDecimal balance = BigDecimal.ZERO;
-        try{
+        try {
             String url = BASE_URL + "accounts";
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(authToken);
