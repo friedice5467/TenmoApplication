@@ -87,6 +87,6 @@ public class Transfer {
 
     @Override
     public String toString(){
-        return getTransferId() + " " + getSenderUsername() + " " + getAmount();
+        return "Transfer ID: " + getTransferId() + "\tFrom: " + getSenderUsername() + "\tTo: " + getReceiverUsername() + "\tAmount: " + getAmount();
     }
 }
