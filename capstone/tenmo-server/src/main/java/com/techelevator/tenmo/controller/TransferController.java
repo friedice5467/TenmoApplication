@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/transfer")
@@ -29,6 +30,12 @@ public class TransferController {
         this.userDao = userDao;
     }
 
+    @GetMapping()
+    public List<Transfer> getTransferList(Principal principal){
+       int accountFromId = userDao.findAccountIdByUsername(principal.getName());
+        return transferDao.findTransferByAccountID(accountFromId);
+    }
+
     @PostMapping("/send")
     public void createSendTransfer(Principal principal, @RequestBody Transfer transfer) {
         int accountFromId = userDao.findAccountIdByUsername(transfer.getSenderUsername());
@@ -40,7 +47,7 @@ public class TransferController {
             senderUsername = transfer.getSenderUsername();
         }
         transfer.setTransferType(send);
-        transfer.setTransferStatus(pending);
+        transfer.setTransferStatus(approved);
         transfer.setAccountFrom(accountFromId);
         transfer.setAccountTo(accountToId);
         transfer.setSenderUsername(senderUsername);
@@ -48,7 +55,6 @@ public class TransferController {
         transferDao.createSendTransfer(transfer);
 
         if(transfer.getAmount().compareTo(BigDecimal.ZERO) > 0 && userDao.getBalance(transfer.getSenderUsername()).compareTo(transfer.getAmount()) >= 0 ){
-            transfer.setTransferStatus(approved);
             transferDao.updateTransfer(userIdSender, userIdReceiver, transfer);
         }
         else {

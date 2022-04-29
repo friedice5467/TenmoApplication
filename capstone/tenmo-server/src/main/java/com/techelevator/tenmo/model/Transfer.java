@@ -57,6 +57,10 @@ public class Transfer {
         return amount;
     }
 
+    public void setTransferId(int transferId) {
+        this.transferId = transferId;
+    }
+
     public void setReceiverUsername(String receiverUsername) {
         this.receiverUsername = receiverUsername;
     }

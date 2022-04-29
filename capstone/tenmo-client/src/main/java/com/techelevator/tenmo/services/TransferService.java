@@ -1,11 +1,13 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Transfer;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class TransferService {
 
@@ -27,12 +29,32 @@ public class TransferService {
             HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
 
             restTemplate.postForObject(url, entity, Void.class);
-            System.out.println("posted");
             return true;
         } catch (RestClientException e) {
-            System.out.println("failed");
+            System.out.println("this failed");
             return false;
         }
 
+    }
+
+    public List<Transfer> getPastTransfer(){
+        List<Transfer> transferList =new ArrayList<>();
+
+        try{
+            String url = BASE_URL + "transfer";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(authToken);
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Transfer[]>response =restTemplate.exchange(url, HttpMethod.GET, entity, Transfer[].class);
+            transferList = Arrays.asList(response.getBody());
+        } catch (RestClientException e) {
+
+        }
+        for(Transfer transfer : transferList){
+            System.out.println(transfer.toString());
+        }
+        return transferList;
     }
 }
