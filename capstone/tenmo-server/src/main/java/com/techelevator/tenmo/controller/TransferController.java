@@ -26,17 +26,17 @@ public class TransferController {
     private final int request = 1;
 
     @Autowired
-    public TransferController(TransferDao transferDao, UserDao userDao){
+    public TransferController(TransferDao transferDao, UserDao userDao) {
         this.transferDao = transferDao;
         this.userDao = userDao;
     }
 
     @GetMapping()
-    public List<Transfer> getTransferList(Principal principal){
-       int accountFromId = userDao.findAccountIdByUsername(principal.getName());
+    public List<Transfer> getTransferList(Principal principal) {
+        int accountFromId = userDao.findAccountIdByUsername(principal.getName());
 
         List<Transfer> transferList = transferDao.findTransferByAccountID(accountFromId);
-        List<Transfer> transferList1 = transferDao.findReceivedTransferByAccountId(principal,accountFromId);
+        List<Transfer> transferList1 = transferDao.findReceivedTransferByAccountId(principal, accountFromId);
         transferList.addAll(transferList1);
 
         return transferList;
@@ -49,7 +49,7 @@ public class TransferController {
         int userIdSender = userDao.findIdByUsername(transfer.getSenderUsername());
         int userIdReceiver = userDao.findIdByUsername(transfer.getReceiverUsername());
         String senderUsername = "";
-        if(principal.getName().equalsIgnoreCase(transfer.getSenderUsername())){
+        if (principal.getName().equalsIgnoreCase(transfer.getSenderUsername())) {
             senderUsername = transfer.getSenderUsername();
         }
         transfer.setTransferType(send);
@@ -60,17 +60,19 @@ public class TransferController {
 
         transferDao.createSendTransfer(transfer);
 
-        if(transfer.getAmount().compareTo(BigDecimal.ZERO) > 0 && userDao.getBalance(transfer.getSenderUsername()).compareTo(transfer.getAmount()) >= 0 ){
+        if (transfer.getAmount().compareTo(BigDecimal.ZERO) > 0 && userDao.getBalance(transfer.getSenderUsername()).compareTo(transfer.getAmount()) >= 0) {
             transferDao.updateTransfer(userIdSender, userIdReceiver, transfer);
-        }
-        else {
+        } else {
             transfer.setTransferStatus(rejected);
             transferDao.updateRejectedTransfer(transfer);
         }
     }
 
 
-
+    @GetMapping("/{id}")
+    public Transfer getTransferFromTransactionId(Principal principal, @PathVariable int transactionId) {
+        return transferDao.findTransferByTransferId(principal, transactionId);
+    }
 
 
 }

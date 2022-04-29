@@ -87,6 +87,21 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
+    public Transfer findTransferByTransferId(Principal principal, int transferId){
+        Transfer transfer = new Transfer();
+
+        String sql = "SELECT * \n" +
+                "FROM transfer\n" +
+                "WHERE transfer_id = ?;\n";
+
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, transferId);
+        if(sqlRowSet.next()){
+            transfer = mapRowToTransfer(sqlRowSet, principal.getName());
+        }
+        return transfer;
+    }
+
+    @Override
     public void createSendTransfer(Transfer transfer) {
         int pending = 1;
         int approved = 2;
@@ -163,18 +178,11 @@ public class JdbcTransferDao implements TransferDao{
         int transferToId = row.getInt("account_to");
         BigDecimal amount = row.getBigDecimal("amount");
 
-//        transfer.setSenderUsername(senderUsername);
-//        transfer.setTransferId(transferId);
-//        transfer.setTransferType(transferTypeId);
-//        transfer.setTransferStatus(transferStatusId);
-//        transfer.setAccountFrom(transferFromId);
-//        transfer.setAccountTo(transferToId);
-//        transfer.setAmount(amount);
-
         //String receiverUsername, String senderUsername, int transferType, int transferStatus, int accountFrom, int accountTo, BigDecimal amount
         transfer = new Transfer(receiverUsername, senderUsername, transferId, transferTypeId, transferStatusId, transferFromId, transferToId, amount);
 
         return transfer;
     }
+
 
 }

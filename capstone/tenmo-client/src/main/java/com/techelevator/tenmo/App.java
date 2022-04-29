@@ -10,6 +10,7 @@ import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TransferService;
 import com.techelevator.tenmo.views.RegisteredUsersPage;
 import com.techelevator.tenmo.views.TransferAmountPage;
+import com.techelevator.tenmo.views.ViewTransferPage;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -89,6 +90,9 @@ public class App {
                 viewCurrentBalance();
             } else if (menuSelection == 2) {
                 viewTransferHistory();
+                ViewTransferPage viewTransferPage = new ViewTransferPage();
+                int transactionId = viewTransferPage.display(scanner);
+                transferService.getCurrentTransfer(transactionId);
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
@@ -122,6 +126,7 @@ public class App {
 
 	private void viewTransferHistory() {
         transferService.getPastTransfer();
+
 		
 	}
 
