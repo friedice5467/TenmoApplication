@@ -44,18 +44,43 @@ public class JdbcTransferDao implements TransferDao{
                 "ON t.account_to = a.account_id\n" +
                 "INNER JOIN tenmo_user AS tu\n" +
                 "ON tu.user_id = a.user_id\n" +
-                "WHERE t.account_from = ?\n" +
-                "LIMIT 1;";
+                "WHERE t.account_from = ?\n";
 
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, accountId);
         SqlRowSet sqlRowSet1 = jdbcTemplate.queryForRowSet(sql1, accountId);
-
         String receiveUsername = "";
-        if(sqlRowSet1.next()) {
-            receiveUsername = sqlRowSet1.getString("username");
-        }
+
         while(sqlRowSet.next()){
+            if(sqlRowSet1.next()) {
+                receiveUsername = sqlRowSet1.getString("username");
+            }
             Transfer transfer = mapRowToTransfer(sqlRowSet, receiveUsername);
+            transferList.add(transfer);
+        }
+        return transferList;
+    }
+
+    @Override
+    public List<Transfer> findReceivedTransferByAccountId(Principal principal, int accountId){
+        List<Transfer> transferList = new ArrayList<>();
+        String sql = "SELECT tu.username\n" +
+                "\t, t.transfer_id\n" +
+                "\t, t.transfer_type_id\n" +
+                "\t, t.transfer_status_id\n" +
+                "\t, t.account_from\n" +
+                "\t, t.account_to\n" +
+                "\t, t.amount\n" +
+                "FROM transfer AS t\n" +
+                "INNER JOIN account AS a\n" +
+                "ON t.account_from = a.account_id\n" +
+                "INNER JOIN tenmo_user AS tu\n" +
+                "ON tu.user_id = a.user_id\n" +
+                "WHERE t.account_to = ?\n" +
+                ";";
+
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, accountId);
+        while(sqlRowSet.next()){
+            Transfer transfer = mapRowToTransfer(sqlRowSet, principal.getName());
             transferList.add(transfer);
         }
         return transferList;

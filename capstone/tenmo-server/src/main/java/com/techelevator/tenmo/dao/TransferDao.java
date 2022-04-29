@@ -11,11 +11,14 @@ public interface TransferDao {
 
     public List<Transfer> findTransferByAccountID(int accountId);
 
+    public List<Transfer> findReceivedTransferByAccountId(Principal principal, int accountId);
+
     public void createSendTransfer(Transfer transfer);
 
     public void updateTransfer(int userIdSender, int userIdReceiver, Transfer transfer);
 
     public void updateRejectedTransfer(Transfer transfer);
+
 
 
 

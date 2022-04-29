@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,7 +34,12 @@ public class TransferController {
     @GetMapping()
     public List<Transfer> getTransferList(Principal principal){
        int accountFromId = userDao.findAccountIdByUsername(principal.getName());
-        return transferDao.findTransferByAccountID(accountFromId);
+
+        List<Transfer> transferList = transferDao.findTransferByAccountID(accountFromId);
+        List<Transfer> transferList1 = transferDao.findReceivedTransferByAccountId(principal,accountFromId);
+        transferList.addAll(transferList1);
+
+        return transferList;
     }
 
     @PostMapping("/send")
