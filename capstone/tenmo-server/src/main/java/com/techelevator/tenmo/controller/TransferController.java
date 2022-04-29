@@ -69,10 +69,10 @@ public class TransferController {
     }
 
 
-    @GetMapping("/{id}")
-    public Transfer getTransferFromTransactionId(Principal principal, @PathVariable int transactionId) {
-        return transferDao.findTransferByTransferId(principal, transactionId);
-    }
+//    @GetMapping("/{id}")
+//    public Transfer getTransferFromTransactionId(Principal principal, @PathVariable int transactionId) {
+//        return transferDao.findTransferByTransferId(principal, transactionId);
+//    }
 
 
 }

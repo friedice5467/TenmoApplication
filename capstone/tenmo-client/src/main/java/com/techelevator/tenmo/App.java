@@ -95,7 +95,29 @@ public class App {
 
                 for(Transfer transfer: tempList){
                     if(transfer.getTransferId() == transactionId){
-                        System.out.println("Transfer ID: " + transfer.getTransferId() + "\nFrom: " + transfer.getSenderUsername() + "\nTo: " + transfer.getReceiverUsername() + "\nStatus: " + transfer.getTransferStatus() + "\nType: " + transfer.getTransferType() + "\nAmount: " + transfer.getAmount());
+                        String status = "";
+                        String type = "";
+                        switch (transfer.getTransferStatus()){
+                            case 1:
+                                status = "Pending";
+                                break;
+                            case 2:
+                                status = "Approved";
+                                break;
+                            case 3:
+                                status = "Rejected";
+                                break;
+                        }
+                        switch (transfer.getTransferType()) {
+                            case 1:
+                                type = "Request";
+                                break;
+                            case 2:
+                                type = "Send";
+                                break;
+                        }
+
+                        System.out.println("Transfer ID: " + transfer.getTransferId() + "\nFrom: " + transfer.getSenderUsername() + "\nTo: " + transfer.getReceiverUsername() + "\nStatus: " + status + "\nType: " + type + "\nAmount: " + transfer.getAmount());
                     }
                 }
 
