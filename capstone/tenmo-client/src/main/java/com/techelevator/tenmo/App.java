@@ -89,10 +89,16 @@ public class App {
             if (menuSelection == 1) {
                 viewCurrentBalance();
             } else if (menuSelection == 2) {
-                viewTransferHistory();
+                List<Transfer> tempList = viewTransferHistory();
                 ViewTransferPage viewTransferPage = new ViewTransferPage();
                 int transactionId = viewTransferPage.display(scanner);
-                transferService.getCurrentTransfer(transactionId);
+
+                for(Transfer transfer: tempList){
+                    if(transfer.getTransferId() == transactionId){
+                        System.out.println("Transfer ID: " + transfer.getTransferId() + "\nFrom: " + transfer.getSenderUsername() + "\nTo: " + transfer.getReceiverUsername() + "\nStatus: " + transfer.getTransferStatus() + "\nType: " + transfer.getTransferType() + "\nAmount: " + transfer.getAmount());
+                    }
+                }
+
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
@@ -124,8 +130,8 @@ public class App {
         System.out.println("The balance of this account is: $" + balance);
 	}
 
-	private void viewTransferHistory() {
-        transferService.getPastTransfer();
+	private List<Transfer> viewTransferHistory() {
+        return transferService.getPastTransfer();
 
 		
 	}

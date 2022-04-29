@@ -58,20 +58,20 @@ public class TransferService {
         return transferList;
     }
 
-    public void getCurrentTransfer(int transferId){
-        Transfer transfer = new Transfer();
-        try{
-            String url = BASE_URL + "transfer/" + transferId;
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(authToken);
-            HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-            ResponseEntity<Transfer> response = restTemplate.exchange(url, HttpMethod.GET, entity, Transfer.class);
-            System.out.println(response.getBody().toString());
-        } catch (RestClientException e) {
-            e.printStackTrace();
-        }
-
-    }
+//    public void getCurrentTransfer(int transferId){
+//        Transfer transfer = new Transfer();
+//        try{
+//            String url = BASE_URL + "transfer/" + transferId;
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_JSON);
+//            headers.setBearerAuth(authToken);
+//            HttpEntity<Void> entity = new HttpEntity<>(headers);
+//
+//            ResponseEntity<Transfer> response = restTemplate.exchange(url, HttpMethod.GET, entity, Transfer.class);
+//            System.out.println(response.getBody().toString());
+//        } catch (RestClientException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 }
