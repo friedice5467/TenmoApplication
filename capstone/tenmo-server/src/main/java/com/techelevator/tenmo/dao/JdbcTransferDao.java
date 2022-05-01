@@ -107,7 +107,7 @@ public class JdbcTransferDao implements TransferDao {
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, accountId);
         String requesterUsername = "";
         while(sqlRowSet.next()){
-            Transfer transfer = mapRowToPendingTransfer(sqlRowSet, principal.getName());
+            Transfer transfer = mapRowToTransfer(sqlRowSet, principal.getName());
             requesterUsername = findUsernameByAccountID(transfer.getAccountTo());
             transfer.setReceiverUsername(requesterUsername);
             transferList.add(transfer);
@@ -224,23 +224,5 @@ public class JdbcTransferDao implements TransferDao {
 
         return transfer;
     }
-
-    public Transfer mapRowToPendingTransfer(SqlRowSet row, String senderUsername) {
-        Transfer transfer;
-
-        String receiverUsername = row.getString("username");
-        int transferId = row.getInt("transfer_id");
-        int transferTypeId = row.getInt("transfer_type_id");
-        int transferStatusId = row.getInt("transfer_status_id");
-        int transferFromId = row.getInt("account_from");
-        int transferToId = row.getInt("account_to");
-        BigDecimal amount = row.getBigDecimal("amount");
-
-        //String receiverUsername, String senderUsername, int transferType, int transferStatus, int accountFrom, int accountTo, BigDecimal amount
-        transfer = new Transfer(receiverUsername, senderUsername, transferId, transferTypeId, transferStatusId, transferFromId, transferToId, amount);
-
-        return transfer;
-    }
-
 
 }
