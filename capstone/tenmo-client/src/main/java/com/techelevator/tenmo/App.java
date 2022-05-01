@@ -90,6 +90,17 @@ public class App {
                 displayAllTransfer();
             } else if (menuSelection == 3) {
                 displayRequestTransfer();
+//                String message = "Enter 2 to approve request, 3 to reject: ";
+//                int approved = 2;
+//                int rejected = 3;
+//                int prompt = consoleService.promptForInt(message);
+//                transfer.setTransferStatus(prompt);
+//                if(prompt == approved){
+//                    transferService.updateTransferStatusApproved(transfer);
+//                }
+//                else if(prompt == rejected){
+//                    transferService.updateTransferStatusRejected(transfer);
+//                }
             } else if (menuSelection == 4) {
                 displayUserList();
                 sendBucks();
@@ -180,6 +191,17 @@ public class App {
                         break;
                 }
                 System.out.println("Transfer ID: " + transfer.getTransferId() + "\nFrom: " + transfer.getSenderUsername() + "\nTo: " + transfer.getReceiverUsername() + "\nStatus: " + status + "\nType: " + type + "\nAmount: " + transfer.getAmount());
+                String message = "Enter 2 to approve request, 3 to reject: ";
+                int approved = 2;
+                int rejected = 3;
+                int prompt = consoleService.promptForInt(message);
+                transfer.setTransferStatus(prompt);
+                if(prompt == approved){
+                    transferService.updateTransferStatusApproved(transfer);
+                }
+                else if(prompt == rejected){
+                    transferService.updateTransferStatusRejected(transfer);
+                }
             }
         }
     }

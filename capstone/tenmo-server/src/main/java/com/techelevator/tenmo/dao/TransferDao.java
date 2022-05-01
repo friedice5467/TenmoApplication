@@ -25,4 +25,9 @@ public interface TransferDao {
 
     public String findUsernameByAccountID(int accountId);
 
+    public void updateApprovedRequest(int userIdSender, int userIdReceiver, Transfer transfer);
+
+    public void updateRejectedRequest(Transfer transfer);
+
+
 }

@@ -12,6 +12,11 @@ import java.util.List;
 
 @Component
 public class JdbcTransferDao implements TransferDao {
+    private int pending = 1;
+    private int approved = 2;
+    private int rejected = 3;
+    private int send = 2;
+    private int request = 1;
     private JdbcTemplate jdbcTemplate;
 
 
@@ -132,11 +137,6 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public void createSendTransfer(Transfer transfer) {
-        int pending = 1;
-        int approved = 2;
-        int rejected = 3;
-        int send = 2;
-        int request = 1;
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)\n" +
                 "VALUES (?, ?, ?, ?, ?);";
         jdbcTemplate.update(sql, send, pending, transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
@@ -144,11 +144,6 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public void createRequestTransfer(Transfer transfer) {
-        int pending = 1;
-        int approved = 2;
-        int rejected = 3;
-        int send = 2;
-        int request = 1;
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)\n" +
                 "VALUES (?, ?, ?, ?, ?);";
         jdbcTemplate.update(sql, request, pending, transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
@@ -190,6 +185,33 @@ public class JdbcTransferDao implements TransferDao {
 
         jdbcTemplate.update(sql, transfer.getTransferStatus());
     }
+
+    @Override
+    public void updateApprovedRequest(int userIdSender, int userIdReceiver ,Transfer transfer){
+        String sql = "UPDATE transfer \n" +
+                "SET transfer_status_id = ?\n" +
+                "WHERE transfer_id = ?;\n" +
+                "\n" +
+                "UPDATE account\n" +
+                "SET balance = balance - ? \n" +
+                "WHERE user_id = ?;\n" +
+                "\n" +
+                "UPDATE account\n" +
+                "SET balance = balance + ?\n" +
+                "WHERE user_id = ?;";
+
+        jdbcTemplate.update(sql, approved, transfer.getTransferId(), transfer.getAmount(), userIdSender, transfer.getAmount(), userIdReceiver);
+    }
+
+    @Override
+    public void updateRejectedRequest(Transfer transfer) {
+        String sql = "UPDATE transfer\n" +
+                "SET transfer_status_id = ?\n" +
+                "WHERE transfer_id = ?;";
+
+        jdbcTemplate.update(sql, rejected, transfer.getTransferId());
+    }
+
 
     /*
     private Product mapRowToProduct(SqlRowSet row)

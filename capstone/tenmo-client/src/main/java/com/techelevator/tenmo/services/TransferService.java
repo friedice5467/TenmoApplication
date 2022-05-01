@@ -53,7 +53,6 @@ public class TransferService {
             System.out.println("Transfer request failed, please select a username from the list");
             return false;
         }
-
     }
 
     public List<Transfer> getPastTransfer(){
@@ -100,6 +99,33 @@ public class TransferService {
         return transferList;
     }
 
+    public void updateTransferStatusApproved(Transfer transfer){
+        try{
+            String url = BASE_URL + "transfer/approve";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(authToken);
+            HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
+
+            restTemplate.postForObject(url, entity, Void.class);
+        } catch (RestClientException e) {
+            System.out.println("didn't work at approved transfer");
+        }
+    }
+
+    public void updateTransferStatusRejected(Transfer transfer){
+        try{
+            String url = BASE_URL + "transfer/reject";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(authToken);
+            HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
+
+            restTemplate.postForObject(url, entity, Void.class);
+        } catch (RestClientException e) {
+            System.out.println("didn't work at rejected transfer");
+        }
+    }
 
 //    public void getCurrentTransfer(int transferId){
 //        Transfer transfer = new Transfer();

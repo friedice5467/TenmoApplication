@@ -95,9 +95,22 @@ public class TransferController {
         transfer.setSenderUsername(senderUsername);
 
         transferDao.createRequestTransfer(transfer);
-
-
-
     }
 
+    @PostMapping("/approve")
+    public void updateApprovedRequest(@RequestBody Transfer transfer){
+        int userIdSender = userDao.findIdByUsername(transfer.getSenderUsername());
+        int userIdReceiver = userDao.findIdByUsername(transfer.getReceiverUsername());
+
+        if(transfer.getAmount().compareTo(BigDecimal.ZERO) > 0 && userDao.getBalance(transfer.getSenderUsername()).compareTo(transfer.getAmount()) >= 0){
+            transfer.setTransferStatus(approved);
+            transferDao.updateApprovedRequest(userIdSender, userIdReceiver, transfer);
+        }
+    }
+
+    @PostMapping("/reject")
+    public void updateRejectedRequest(@RequestBody Transfer transfer){
+        transfer.setTransferStatus(rejected);
+        transferDao.updateRejectedRequest(transfer);
+    }
 }
