@@ -11,13 +11,22 @@ public class RegisteredUsersPage {
         //displays stuff here
         List<String> userList = accountService.getUserList();
         int counter = 1;
+        String username = "";
+
+        System.out.println();
+        System.out.println("------------------------");
+        System.out.println("User ID \tUsername ");
+        System.out.println("------------------------");
         for (String user : userList) {
-            System.out.println(counter + ": " + user);
+            System.out.println(counter + ": \t\t\t" + user);
             counter++;
         }
-        System.out.print("Choose a user from the list that you want to send money to:  ");
-
-        return scanner.nextLine().trim();
+        System.out.println("------------------------");
+        System.out.println();
+        System.out.print("Choose a username from the list to send money to:  ");
+        username = scanner.nextLine().trim();
+        System.out.println("----------------------------------------------------------");
+        return username;
     }
     //what is their username?: enter here
 }

@@ -23,4 +23,6 @@ public interface TransferDao {
 
     public List<Transfer> getRequestTransferList(Principal principal, int accountId);
 
+    public String findUsernameByAccountID(int accountId);
+
 }

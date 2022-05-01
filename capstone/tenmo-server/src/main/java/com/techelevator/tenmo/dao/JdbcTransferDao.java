@@ -14,6 +14,7 @@ import java.util.List;
 public class JdbcTransferDao implements TransferDao {
     private JdbcTemplate jdbcTemplate;
 
+
     public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -47,13 +48,13 @@ public class JdbcTransferDao implements TransferDao {
 
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, accountId);
         SqlRowSet sqlRowSet1 = jdbcTemplate.queryForRowSet(sql1, accountId);
-        String receiveUsername = "";
+        String receiverUsername = "";
 
         while (sqlRowSet.next()) {
             if (sqlRowSet1.next()) {
-                receiveUsername = sqlRowSet1.getString("username");
+                receiverUsername = sqlRowSet1.getString("username");
             }
-            Transfer transfer = mapRowToTransfer(sqlRowSet, receiveUsername);
+            Transfer transfer = mapRowToTransfer(sqlRowSet, receiverUsername);
             transferList.add(transfer);
         }
         return transferList;
@@ -87,17 +88,46 @@ public class JdbcTransferDao implements TransferDao {
 
     public List<Transfer> getRequestTransferList(Principal principal, int accountId){
         List<Transfer> transferList = new ArrayList<>();
-        String sql = "SELECT * \n" +
-                "FROM transfer\n" +
-                "WHERE transfer_type_id = 1\n" +
-                "AND account_from = ?;";
+        String sql = "SELECT tu.username\n" +
+                "\t, t.transfer_id\n" +
+                "\t, t.transfer_type_id\n" +
+                "\t, t.transfer_status_id\n" +
+                "\t, t.account_from\n" +
+                "\t, t.account_to\n" +
+                "\t, t.amount\n" +
+                "FROM transfer AS t\n" +
+                "INNER JOIN account AS a\n" +
+                "ON t.account_from = a.account_id\n" +
+                "INNER JOIN tenmo_user AS tu\n" +
+                "ON tu.user_id = a.user_id\n" +
+                "WHERE t.account_from = ?\n" +
+                "AND t.transfer_status_id = 1" +
+                ";";
 
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, accountId);
+        String requesterUsername = "";
         while(sqlRowSet.next()){
-            Transfer transfer = mapRowToTransfer(sqlRowSet, principal.getName());
+            Transfer transfer = mapRowToPendingTransfer(sqlRowSet, principal.getName());
+            requesterUsername = findUsernameByAccountID(transfer.getAccountTo());
+            transfer.setReceiverUsername(requesterUsername);
             transferList.add(transfer);
         }
         return transferList;
+    }
+
+    @Override
+    public String findUsernameByAccountID(int accountId) {
+        String sql = "SELECT tu.username\n" +
+                "FROM tenmo_user AS tu\n" +
+                "INNER JOIN account AS a\n" +
+                "ON tu.user_id = a.user_id\n" +
+                "WHERE account_id = ?;";
+        String username = "";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountId);
+        if(rowSet.next()) {
+            username = rowSet.getString("username");
+        }
+        return username;
     }
 
     @Override
@@ -182,6 +212,23 @@ public class JdbcTransferDao implements TransferDao {
         Transfer transfer;
 
         String senderUsername = row.getString("username");
+        int transferId = row.getInt("transfer_id");
+        int transferTypeId = row.getInt("transfer_type_id");
+        int transferStatusId = row.getInt("transfer_status_id");
+        int transferFromId = row.getInt("account_from");
+        int transferToId = row.getInt("account_to");
+        BigDecimal amount = row.getBigDecimal("amount");
+
+        //String receiverUsername, String senderUsername, int transferType, int transferStatus, int accountFrom, int accountTo, BigDecimal amount
+        transfer = new Transfer(receiverUsername, senderUsername, transferId, transferTypeId, transferStatusId, transferFromId, transferToId, amount);
+
+        return transfer;
+    }
+
+    public Transfer mapRowToPendingTransfer(SqlRowSet row, String senderUsername) {
+        Transfer transfer;
+
+        String receiverUsername = row.getString("username");
         int transferId = row.getInt("transfer_id");
         int transferTypeId = row.getInt("transfer_type_id");
         int transferStatusId = row.getInt("transfer_status_id");

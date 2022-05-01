@@ -49,6 +49,7 @@ public class JdbcUserDao implements UserDao {
         return account_id;
     }
 
+
     @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();

@@ -48,6 +48,7 @@ public class TransferController {
 
         List<Transfer> transferList = transferDao.getRequestTransferList(principal, accountFromId);
 
+
         return transferList;
     }
 

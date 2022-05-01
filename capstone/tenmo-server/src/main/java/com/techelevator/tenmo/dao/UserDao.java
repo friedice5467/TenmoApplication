@@ -21,4 +21,6 @@ public interface UserDao {
     BigDecimal getBalance(String username);
 
     List<String> listAll(Principal principal);
+
+
 }

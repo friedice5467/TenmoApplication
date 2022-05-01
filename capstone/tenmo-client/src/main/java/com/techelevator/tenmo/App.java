@@ -94,7 +94,7 @@ public class App {
                 displayUserList();
                 sendBucks();
             } else if (menuSelection == 5) {
-                displayUserList();
+                displayUserListForPending();
                 requestBucks();
             } else if (menuSelection == 0) {
                 continue;
@@ -179,14 +179,12 @@ public class App {
                         type = "Send";
                         break;
                 }
-
                 System.out.println("Transfer ID: " + transfer.getTransferId() + "\nFrom: " + transfer.getSenderUsername() + "\nTo: " + transfer.getReceiverUsername() + "\nStatus: " + status + "\nType: " + type + "\nAmount: " + transfer.getAmount());
             }
         }
     }
 
     private List<Transfer> viewPendingRequests() {
-        // TODO Auto-generated method stub
         return transferService.getPendingTransfer();
 
 
@@ -201,13 +199,21 @@ public class App {
         transfer.setSenderUsername(currentUser.getUser().getUsername());
     }
 
+    private void displayUserListForPending() {
+        RegisteredUsersPage registeredUsersPage = new RegisteredUsersPage();
+        String senderUsername = registeredUsersPage.display(scanner, accountService);
+        transfer.setSenderUsername(senderUsername);
+        TransferAmountPage transferAmountPage = new TransferAmountPage();
+        BigDecimal amount = transferAmountPage.displayForRequest(scanner);
+        transfer.setAmount(amount);
+        transfer.setReceiverUsername(currentUser.getUser().getUsername());
+    }
+
     private void sendBucks() {
         transferService.createSendTransfer(transfer);
     }
 
     private void requestBucks() {
-        // TODO Auto-generated method stub
-
         transferService.createRequestTransfer(transfer);
 
     }

@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.views.RegisteredUsersPage;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -8,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class TransferService {
 
@@ -31,7 +33,7 @@ public class TransferService {
             restTemplate.postForObject(url, entity, Void.class);
             return true;
         } catch (RestClientException e) {
-            System.out.println("this failed");
+            System.out.println("Transfer failed, please select a username from the list.");
             return false;
         }
 
@@ -48,7 +50,7 @@ public class TransferService {
             restTemplate.postForObject(url, entity, Void.class);
             return true;
         } catch (RestClientException e) {
-            System.out.println("this failed");
+            System.out.println("Transfer request failed, please select a username from the list");
             return false;
         }
 
@@ -69,9 +71,11 @@ public class TransferService {
         } catch (RestClientException e) {
 
         }
+        System.out.println("----------------------------------------------------------");
         for(Transfer transfer : transferList){
             System.out.println(transfer.toString());
         }
+        System.out.println("----------------------------------------------------------");
         return transferList;
     }
 
@@ -95,6 +99,7 @@ public class TransferService {
         }
         return transferList;
     }
+
 
 //    public void getCurrentTransfer(int transferId){
 //        Transfer transfer = new Transfer();
