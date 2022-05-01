@@ -6,21 +6,29 @@ import java.util.Scanner;
 public class TransferAmountPage {
 
     public BigDecimal display(Scanner scanner){
+        try{
+            System.out.print("How many TE bucks do you want to send: ");
+            BigDecimal amount = BigDecimal.valueOf(Long.parseLong(scanner.nextLine()));
+            System.out.println("----------------------------------------------------------");
 
-        System.out.print("How many TE bucks do you want to send: ");
-        BigDecimal amount = BigDecimal.valueOf(Long.parseLong(scanner.nextLine()));
-        System.out.println("----------------------------------------------------------");
+            return amount;
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid number");
+        }
+        return BigDecimal.ZERO;
 
-        return amount;
     }
 
     public BigDecimal displayForRequest(Scanner scanner){
+        try{
+            System.out.print("Please enter a TE bucks request amount: ");
+            BigDecimal amount = BigDecimal.valueOf(Long.parseLong(scanner.nextLine()));
+            System.out.println("----------------------------------------------------------");
 
-        System.out.print("Please enter a TE bucks request amount: ");
-        BigDecimal amount = BigDecimal.valueOf(Long.parseLong(scanner.nextLine()));
-        System.out.println("----------------------------------------------------------");
-
-        return amount;
+            return amount;
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid number");
+        }
+        return BigDecimal.ZERO;
     }
-
 }
